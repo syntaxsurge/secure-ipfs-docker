@@ -1,0 +1,18 @@
+version: '3.7'
+
+services:
+  ipfs:
+    build: .
+    container_name: ipfs_node
+    ports:
+      - "${IPFS_SWARM_PORT}:${IPFS_SWARM_PORT}"
+      - "${IPFS_API_PORT}:${IPFS_API_PORT}"
+      - "${IPFS_GATEWAY_PORT}:${IPFS_GATEWAY_PORT}"
+    environment:
+      - IPFS_API_PORT=5101
+      - IPFS_GATEWAY_PORT=8081
+      - IPFS_SWARM_PORT=4002
+    network_mode: "host"
+    cap_add:
+      - NET_ADMIN
+    restart: unless-stopped
