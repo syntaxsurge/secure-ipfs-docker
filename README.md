@@ -19,8 +19,8 @@ This repository contains a Docker setup for hosting an IPFS node with IP whiteli
 1. Clone this repository:
 
     ```bash
-    git clone https://github.com/syntaxsurge/docker-ipfs-whitelist.git
-    cd docker-ipfs-whitelist
+    git clone https://github.com/syntaxsurge/secure-ipfs-docker.git
+    cd secure-ipfs-docker
     ```
 
 2. Build the Docker image:
