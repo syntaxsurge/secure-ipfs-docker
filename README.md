@@ -1,13 +1,13 @@
 # Docker IPFS Node with IP Whitelisting
 
-This repository contains a Docker setup for hosting an IPFS node with IP whitelisting. The IPFS node runs inside a Docker container and uses `iptables` to restrict access to specific IP addresses. You can also configure the ports for the IPFS API, Gateway, and Swarm.
+This repository contains a Docker setup for hosting an IPFS node with IP whitelisting. The IPFS node runs inside a Docker container and uses Nginx to restrict access to specific IP addresses. You can also configure the ports for the IPFS API, Gateway, and Swarm.
 
 ## Features
 
 - Run an IPFS node inside a Docker container
 - Whitelist specific IP addresses for access
 - Configure IPFS API, Gateway, and Swarm ports using environment variables
-- Uses `iptables` for enhanced security
+- Uses Nginx for enhanced security
 
 ## Prerequisites
 
@@ -26,45 +26,44 @@ This repository contains a Docker setup for hosting an IPFS node with IP whiteli
 2. Build the Docker image:
 
     ```bash
-    docker-compose build
+    docker compose build
     ```
 
 3. Run the Docker container:
 
     ```bash
-    docker-compose up -d
+    docker compose up -d
     ```
 
 ## Configuration
 
 ### IP Whitelisting
 
-By default, the IP whitelist includes localhost (`127.0.0.1`) and a specific IP range (`49.144.223.21`). You can modify the `entrypoint.sh` script to change the IP addresses as needed.
+By default, the IP whitelist includes localhost (`127.0.0.1`) and a specific IP range (`49.144.223.21`). You can modify the `.env` file to change the IP addresses as needed.
+
+#### Example `.env` file
+
+```env
+IPFS_API_PORT=5001
+IPFS_GATEWAY_PORT=8081
+IPFS_SWARM_PORT=4002
+WHITELISTED_IPS=127.0.0.1,49.144.223.21
+```
 
 ### Custom Ports
 
-You can configure the ports for the IPFS API, Gateway, and Swarm by setting environment variables in the `docker-compose.yml` file. The default ports are:
+You can configure the ports for the IPFS API, Gateway, and Swarm by setting environment variables in the `.env` file. The default ports are:
 
-- `IPFS_API_PORT=5101`
+- `IPFS_API_PORT=5001`
 - `IPFS_GATEWAY_PORT=8081`
 - `IPFS_SWARM_PORT=4002`
 
-To change the ports, update the `environment` section in the `docker-compose.yml` file:
+To change the ports, update the values in the `.env` file:
 
-```yaml
-environment:
-  - IPFS_API_PORT=YourCustomApiPort
-  - IPFS_GATEWAY_PORT=YourCustomGatewayPort
-  - IPFS_SWARM_PORT=YourCustomSwarmPort
-```
-
-Make sure to also update the exposed ports in the `ports` section accordingly if you change the environment variable name:
-
-```yaml
-ports:
-  - "${IPFS_SWARM_PORT}:${IPFS_SWARM_PORT}"
-  - "${IPFS_API_PORT}:${IPFS_API_PORT}"
-  - "${IPFS_GATEWAY_PORT}:${IPFS_GATEWAY_PORT}"
+```env
+IPFS_API_PORT=YourCustomApiPort
+IPFS_GATEWAY_PORT=YourCustomGatewayPort
+IPFS_SWARM_PORT=YourCustomSwarmPort
 ```
 
 ## Running the IPFS Node
@@ -72,10 +71,11 @@ ports:
 To start the IPFS node, use Docker Compose:
 
 ```bash
-docker-compose up -d
+docker compose down --remove-orphans && \
+docker compose build && docker compose up -d && docker logs -f ipfs_node
 ```
 
-This will build and run the Docker container with the IPFS node, applying the IP whitelisting rules and exposing the configured ports.
+This will build, run, and show the logs of the Docker container with the IPFS node, applying the IP whitelisting rules and exposing the configured ports.
 
 ## Viewing Logs
 
@@ -89,7 +89,7 @@ This will display the logs of the IPFS node container and follow the log output 
 
 ## Testing the IPFS Node
 
-To test if the IPFS node is running, you can use the following `curl` command to fetch a known IPFS hash and follow redirects:
+To test if the IPFS node is running, you can use the following `curl` command to fetch a known IPFS hash and follow redirects. Replace `8081` with the value of `IPFS_GATEWAY_PORT` if you have changed it in the `.env` file:
 
 ```bash
 curl -L http://localhost:8081/ipfs/QmSfYnQSoUfuvd2SUGfHdfvqUSq8tyYmWBA7k7dt1o5MWV
