@@ -19,20 +19,15 @@ This repository contains a Docker setup for hosting an IPFS node with IP whiteli
 1. Clone this repository:
 
     ```bash
-    git clone https://github.com/syntaxsurge/secure-ipfs-docker.git
-    cd secure-ipfs-docker
+    cd /root && \
+    git clone https://github.com/syntaxsurge/secure-ipfs-docker.git && \
+    cd /root/secure-ipfs-docker
     ```
 
-2. Build the Docker image:
+2. Build the Docker image and Run the Docker container:
 
     ```bash
-    docker compose build
-    ```
-
-3. Run the Docker container:
-
-    ```bash
-    docker compose up -d
+    docker compose build && docker compose up -d
     ```
 
 ## Configuration
